@@ -12,12 +12,12 @@ ENGINE = None
 
 class ModelExtensions:
     @classmethod
-    def get_db(cls, guild_id: int):
-        if guild_id in ENGINES:
-            return ENGINES[guild_id]
+    def get_db(cls, db_name):
+        if db_name in ENGINES:
+            return ENGINES[db_name]
         else:
-            engine = AIOEngine(mongo_client, str(guild_id))
-            ENGINES[guild_id] = engine
+            engine = AIOEngine(mongo_client, str(db_name))
+            ENGINES[db_name] = engine
             return engine
 
     @property
@@ -36,11 +36,17 @@ class Guild(Model, ModelExtensions):
     name: str
 
     class Config:
-        collection = "guild"
-
-    def guild_id(self):
-        return self.id
+        collection = "guilds"
 
     @classmethod
-    async def find(cls, guild_id: int) -> Guild:
-        return await cls.get_db(guild_id).find_one(cls, cls.id == guild_id)
+    @property
+    def db(self) -> AIOEngine:
+        return self.get_db("guilds")
+
+    @classmethod
+    async def find_one(cls, guild_id: int) -> Guild:
+        return await cls.db.find_one(cls, cls.id == guild_id)
+
+    @classmethod
+    async def find(cls, *args, **kwds):
+        return await cls.db.find(cls, *args, **kwds)

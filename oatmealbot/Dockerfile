@@ -21,6 +21,3 @@ COPY . /app
 RUN useradd appuser && chown -R appuser /app
 USER appuser
 RUN pipenv install --deploy --ignore-pipfile
-
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["pipenv", "run", "python", "-m", "bot"]

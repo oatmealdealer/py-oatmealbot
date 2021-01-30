@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+discord = "*"
+motor = "*"
+odmantic = "*"
 fastapi = "*"
 uvicorn = "*"
-unknown = {editable = true, path = "./../models"}
 
 [dev-packages]
 

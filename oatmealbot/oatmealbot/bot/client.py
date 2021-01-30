@@ -1,19 +1,7 @@
 from typing import List
+
 import discord
-
-from motor.motor_asyncio import AsyncIOMotorClient
-import motor.motor_asyncio as motor
-from os import getenv
-from models import Guild, AIOEngine
-
-# client = discord.Client()
-mongo_client = AsyncIOMotorClient(getenv("MONGODB_URI"))
-engine = AIOEngine(mongo_client)
-# db = mongo_client.admin
-
-
-def dict_from_obj(thing, attrs: List[str]):
-    return {slot: getattr(thing, slot) for slot in attrs}
+from oatmealbot.models import AIOEngine, Guild
 
 
 async def dump_guild(guild: discord.Guild):
@@ -21,9 +9,10 @@ async def dump_guild(guild: discord.Guild):
     # guild_col: motor.AsyncIOMotorCollection = db.guild
     # find_guild = await guild_col.find_one({"id": guild.id})
     # if find_guild is None:
-    insert_guild = Guild(id=guild.id, name=guild.name)
-    await engine.save(insert_guild)
-    print("Inserted guild {0.id}: {}".format(guild, insert_guild))
+    insert_guild = Guild(name=guild.name, id=guild.id)
+    await insert_guild.save()
+
+    print("Inserted guild: {}".format(guild))
 
 
 class OatClient(discord.Client):
@@ -32,7 +21,7 @@ class OatClient(discord.Client):
         print("We have logged in as {0.user}".format(self))
         print("Connected guilds: {0.guilds}".format(self))
         for guild in self.guilds:
-            print(dict_from_obj(guild, ["id", "name"]))
+            # print(dict_from_obj(guild, ["id", "name"]))
             await dump_guild(guild)
 
     # @client.event

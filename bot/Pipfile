@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 discord = "*"
+motor = "*"
+unknown = {editable = true, path = "./../models"}
 
 [dev-packages]
 

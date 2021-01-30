@@ -1,5 +1,5 @@
 from os import getenv
-from bot import client
+from .client import client
 
 # from os.path import dirname
 # from dotenv import load_dotenv
